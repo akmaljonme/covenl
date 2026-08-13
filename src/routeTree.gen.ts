@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AuthenticatedAiEmployeesRouteImport } from './routes/_authenticated/ai-employees'
 import { Route as AuthenticatedApplicationsRouteImport } from './routes/_authenticated/applications'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedCompanyRouteImport } from './routes/_authenticated/company'
@@ -20,7 +21,12 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
 import { Route as AuthenticatedDevelopersRouteImport } from './routes/_authenticated/developers'
 import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
+import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedOfficeRouteImport } from './routes/_authenticated/office'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
+import { Route as AuthenticatedAiEmployeesIndexRouteImport } from './routes/_authenticated/ai-employees.index'
+import { Route as AuthenticatedAiEmployeesAiEmployeeIdRouteImport } from './routes/_authenticated/ai-employees.$aiEmployeeId'
 import { Route as AuthenticatedCompanyIndexRouteImport } from './routes/_authenticated/company.index'
 import { Route as AuthenticatedCompanySettingsRouteImport } from './routes/_authenticated/company.settings'
 import { Route as AuthenticatedDevelopersIndexRouteImport } from './routes/_authenticated/developers.index'
@@ -45,6 +51,12 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAiEmployeesRoute =
+  AuthenticatedAiEmployeesRouteImport.update({
+    id: '/ai-employees',
+    path: '/ai-employees',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedApplicationsRoute =
   AuthenticatedApplicationsRouteImport.update({
     id: '/applications',
@@ -81,11 +93,38 @@ const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
   path: '/jobs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOfficeRoute = AuthenticatedOfficeRouteImport.update({
+  id: '/office',
+  path: '/office',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
   id: '/team',
   path: '/team',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAiEmployeesIndexRoute =
+  AuthenticatedAiEmployeesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAiEmployeesRoute,
+  } as any)
+const AuthenticatedAiEmployeesAiEmployeeIdRoute =
+  AuthenticatedAiEmployeesAiEmployeeIdRouteImport.update({
+    id: '/$aiEmployeeId',
+    path: '/$aiEmployeeId',
+    getParentRoute: () => AuthenticatedAiEmployeesRoute,
+  } as any)
 const AuthenticatedCompanyIndexRoute =
   AuthenticatedCompanyIndexRouteImport.update({
     id: '/',
@@ -115,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/ai-employees': typeof AuthenticatedAiEmployeesRouteWithChildren
   '/applications': typeof AuthenticatedApplicationsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/company': typeof AuthenticatedCompanyRouteWithChildren
@@ -122,9 +162,14 @@ export interface FileRoutesByFullPath {
   '/developer': typeof AuthenticatedDeveloperRoute
   '/developers': typeof AuthenticatedDevelopersRouteWithChildren
   '/jobs': typeof AuthenticatedJobsRoute
+  '/messages': typeof AuthenticatedMessagesRoute
+  '/office': typeof AuthenticatedOfficeRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/team': typeof AuthenticatedTeamRoute
+  '/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
   '/company/settings': typeof AuthenticatedCompanySettingsRoute
   '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/ai-employees/': typeof AuthenticatedAiEmployeesIndexRoute
   '/company/': typeof AuthenticatedCompanyIndexRoute
   '/developers/': typeof AuthenticatedDevelopersIndexRoute
 }
@@ -137,9 +182,14 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/developer': typeof AuthenticatedDeveloperRoute
   '/jobs': typeof AuthenticatedJobsRoute
+  '/messages': typeof AuthenticatedMessagesRoute
+  '/office': typeof AuthenticatedOfficeRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/team': typeof AuthenticatedTeamRoute
+  '/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
   '/company/settings': typeof AuthenticatedCompanySettingsRoute
   '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/ai-employees': typeof AuthenticatedAiEmployeesIndexRoute
   '/company': typeof AuthenticatedCompanyIndexRoute
   '/developers': typeof AuthenticatedDevelopersIndexRoute
 }
@@ -149,6 +199,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/ai-employees': typeof AuthenticatedAiEmployeesRouteWithChildren
   '/_authenticated/applications': typeof AuthenticatedApplicationsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/company': typeof AuthenticatedCompanyRouteWithChildren
@@ -156,9 +207,14 @@ export interface FileRoutesById {
   '/_authenticated/developer': typeof AuthenticatedDeveloperRoute
   '/_authenticated/developers': typeof AuthenticatedDevelopersRouteWithChildren
   '/_authenticated/jobs': typeof AuthenticatedJobsRoute
+  '/_authenticated/messages': typeof AuthenticatedMessagesRoute
+  '/_authenticated/office': typeof AuthenticatedOfficeRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
+  '/_authenticated/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
   '/_authenticated/company/settings': typeof AuthenticatedCompanySettingsRoute
   '/_authenticated/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/_authenticated/ai-employees/': typeof AuthenticatedAiEmployeesIndexRoute
   '/_authenticated/company/': typeof AuthenticatedCompanyIndexRoute
   '/_authenticated/developers/': typeof AuthenticatedDevelopersIndexRoute
 }
@@ -168,6 +224,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/ai-employees'
     | '/applications'
     | '/companies'
     | '/company'
@@ -175,9 +232,14 @@ export interface FileRouteTypes {
     | '/developer'
     | '/developers'
     | '/jobs'
+    | '/messages'
+    | '/office'
+    | '/settings'
     | '/team'
+    | '/ai-employees/$aiEmployeeId'
     | '/company/settings'
     | '/developers/$developerId'
+    | '/ai-employees/'
     | '/company/'
     | '/developers/'
   fileRoutesByTo: FileRoutesByTo
@@ -190,9 +252,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/developer'
     | '/jobs'
+    | '/messages'
+    | '/office'
+    | '/settings'
     | '/team'
+    | '/ai-employees/$aiEmployeeId'
     | '/company/settings'
     | '/developers/$developerId'
+    | '/ai-employees'
     | '/company'
     | '/developers'
   id:
@@ -201,6 +268,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/ai-employees'
     | '/_authenticated/applications'
     | '/_authenticated/companies'
     | '/_authenticated/company'
@@ -208,9 +276,14 @@ export interface FileRouteTypes {
     | '/_authenticated/developer'
     | '/_authenticated/developers'
     | '/_authenticated/jobs'
+    | '/_authenticated/messages'
+    | '/_authenticated/office'
+    | '/_authenticated/settings'
     | '/_authenticated/team'
+    | '/_authenticated/ai-employees/$aiEmployeeId'
     | '/_authenticated/company/settings'
     | '/_authenticated/developers/$developerId'
+    | '/_authenticated/ai-employees/'
     | '/_authenticated/company/'
     | '/_authenticated/developers/'
   fileRoutesById: FileRoutesById
@@ -251,6 +324,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/ai-employees': {
+      id: '/_authenticated/ai-employees'
+      path: '/ai-employees'
+      fullPath: '/ai-employees'
+      preLoaderRoute: typeof AuthenticatedAiEmployeesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/applications': {
       id: '/_authenticated/applications'
@@ -301,12 +381,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJobsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/messages': {
+      id: '/_authenticated/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AuthenticatedMessagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/office': {
+      id: '/_authenticated/office'
+      path: '/office'
+      fullPath: '/office'
+      preLoaderRoute: typeof AuthenticatedOfficeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/team': {
       id: '/_authenticated/team'
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof AuthenticatedTeamRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ai-employees/': {
+      id: '/_authenticated/ai-employees/'
+      path: '/'
+      fullPath: '/ai-employees/'
+      preLoaderRoute: typeof AuthenticatedAiEmployeesIndexRouteImport
+      parentRoute: typeof AuthenticatedAiEmployeesRoute
+    }
+    '/_authenticated/ai-employees/$aiEmployeeId': {
+      id: '/_authenticated/ai-employees/$aiEmployeeId'
+      path: '/$aiEmployeeId'
+      fullPath: '/ai-employees/$aiEmployeeId'
+      preLoaderRoute: typeof AuthenticatedAiEmployeesAiEmployeeIdRouteImport
+      parentRoute: typeof AuthenticatedAiEmployeesRoute
     }
     '/_authenticated/company/': {
       id: '/_authenticated/company/'
@@ -339,6 +454,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAiEmployeesRouteChildren {
+  AuthenticatedAiEmployeesAiEmployeeIdRoute: typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
+  AuthenticatedAiEmployeesIndexRoute: typeof AuthenticatedAiEmployeesIndexRoute
+}
+
+const AuthenticatedAiEmployeesRouteChildren: AuthenticatedAiEmployeesRouteChildren =
+  {
+    AuthenticatedAiEmployeesAiEmployeeIdRoute:
+      AuthenticatedAiEmployeesAiEmployeeIdRoute,
+    AuthenticatedAiEmployeesIndexRoute: AuthenticatedAiEmployeesIndexRoute,
+  }
+
+const AuthenticatedAiEmployeesRouteWithChildren =
+  AuthenticatedAiEmployeesRoute._addFileChildren(
+    AuthenticatedAiEmployeesRouteChildren,
+  )
+
 interface AuthenticatedCompanyRouteChildren {
   AuthenticatedCompanySettingsRoute: typeof AuthenticatedCompanySettingsRoute
   AuthenticatedCompanyIndexRoute: typeof AuthenticatedCompanyIndexRoute
@@ -370,6 +502,7 @@ const AuthenticatedDevelopersRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAiEmployeesRoute: typeof AuthenticatedAiEmployeesRouteWithChildren
   AuthenticatedApplicationsRoute: typeof AuthenticatedApplicationsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedCompanyRoute: typeof AuthenticatedCompanyRouteWithChildren
@@ -377,10 +510,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRoute
   AuthenticatedDevelopersRoute: typeof AuthenticatedDevelopersRouteWithChildren
   AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
+  AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
+  AuthenticatedOfficeRoute: typeof AuthenticatedOfficeRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAiEmployeesRoute: AuthenticatedAiEmployeesRouteWithChildren,
   AuthenticatedApplicationsRoute: AuthenticatedApplicationsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedCompanyRoute: AuthenticatedCompanyRouteWithChildren,
@@ -388,6 +525,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDeveloperRoute: AuthenticatedDeveloperRoute,
   AuthenticatedDevelopersRoute: AuthenticatedDevelopersRouteWithChildren,
   AuthenticatedJobsRoute: AuthenticatedJobsRoute,
+  AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
+  AuthenticatedOfficeRoute: AuthenticatedOfficeRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
 }
 
