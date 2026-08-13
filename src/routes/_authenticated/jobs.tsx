@@ -27,9 +27,11 @@ import { fetchDeveloperApplications, fetchJobs, qk, type JobWithCompany } from "
 import { parseSkills } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/jobs")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    q: typeof search.q === "string" && search.q.length ? search.q.slice(0, 80) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { q?: string } => {
+    const raw = search["q"];
+    return typeof raw === "string" && raw.length ? { q: raw.slice(0, 80) } : {};
+  },
+
   head: () => ({
     meta: [
       { title: "Jobs — COVENL" },
