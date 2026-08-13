@@ -10,33 +10,289 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AuthenticatedAiEmployeesRouteImport } from './routes/_authenticated/ai-employees'
+import { Route as AuthenticatedApplicationsRouteImport } from './routes/_authenticated/applications'
+import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
+import { Route as AuthenticatedCompanyRouteImport } from './routes/_authenticated/company'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
+import { Route as AuthenticatedDevelopersRouteImport } from './routes/_authenticated/developers'
+import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
+import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedOfficeRouteImport } from './routes/_authenticated/office'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
+import { Route as AuthenticatedAiEmployeesIndexRouteImport } from './routes/_authenticated/ai-employees.index'
+import { Route as AuthenticatedAiEmployeesAiEmployeeIdRouteImport } from './routes/_authenticated/ai-employees.$aiEmployeeId'
+import { Route as AuthenticatedCompanyIndexRouteImport } from './routes/_authenticated/company.index'
+import { Route as AuthenticatedCompanySettingsRouteImport } from './routes/_authenticated/company.settings'
+import { Route as AuthenticatedDevelopersIndexRouteImport } from './routes/_authenticated/developers.index'
+import { Route as AuthenticatedDevelopersDeveloperIdRouteImport } from './routes/_authenticated/developers.$developerId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAiEmployeesRoute =
+  AuthenticatedAiEmployeesRouteImport.update({
+    id: '/ai-employees',
+    path: '/ai-employees',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedApplicationsRoute =
+  AuthenticatedApplicationsRouteImport.update({
+    id: '/applications',
+    path: '/applications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCompaniesRoute = AuthenticatedCompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCompanyRoute = AuthenticatedCompanyRouteImport.update({
+  id: '/company',
+  path: '/company',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDeveloperRoute = AuthenticatedDeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDevelopersRoute = AuthenticatedDevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOfficeRoute = AuthenticatedOfficeRouteImport.update({
+  id: '/office',
+  path: '/office',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAiEmployeesIndexRoute =
+  AuthenticatedAiEmployeesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAiEmployeesRoute,
+  } as any)
+const AuthenticatedAiEmployeesAiEmployeeIdRoute =
+  AuthenticatedAiEmployeesAiEmployeeIdRouteImport.update({
+    id: '/$aiEmployeeId',
+    path: '/$aiEmployeeId',
+    getParentRoute: () => AuthenticatedAiEmployeesRoute,
+  } as any)
+const AuthenticatedCompanyIndexRoute =
+  AuthenticatedCompanyIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedCompanyRoute,
+  } as any)
+const AuthenticatedCompanySettingsRoute =
+  AuthenticatedCompanySettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedCompanyRoute,
+  } as any)
+const AuthenticatedDevelopersIndexRoute =
+  AuthenticatedDevelopersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDevelopersRoute,
+  } as any)
+const AuthenticatedDevelopersDeveloperIdRoute =
+  AuthenticatedDevelopersDeveloperIdRouteImport.update({
+    id: '/$developerId',
+    path: '/$developerId',
+    getParentRoute: () => AuthenticatedDevelopersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/ai-employees': typeof AuthenticatedAiEmployeesRouteWithChildren
+  '/applications': typeof AuthenticatedApplicationsRoute
+  '/companies': typeof AuthenticatedCompaniesRoute
+  '/company': typeof AuthenticatedCompanyRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/developer': typeof AuthenticatedDeveloperRoute
+  '/developers': typeof AuthenticatedDevelopersRouteWithChildren
+  '/jobs': typeof AuthenticatedJobsRoute
+  '/messages': typeof AuthenticatedMessagesRoute
+  '/office': typeof AuthenticatedOfficeRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/team': typeof AuthenticatedTeamRoute
+  '/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
+  '/company/settings': typeof AuthenticatedCompanySettingsRoute
+  '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/ai-employees/': typeof AuthenticatedAiEmployeesIndexRoute
+  '/company/': typeof AuthenticatedCompanyIndexRoute
+  '/developers/': typeof AuthenticatedDevelopersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/applications': typeof AuthenticatedApplicationsRoute
+  '/companies': typeof AuthenticatedCompaniesRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/developer': typeof AuthenticatedDeveloperRoute
+  '/jobs': typeof AuthenticatedJobsRoute
+  '/messages': typeof AuthenticatedMessagesRoute
+  '/office': typeof AuthenticatedOfficeRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/team': typeof AuthenticatedTeamRoute
+  '/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
+  '/company/settings': typeof AuthenticatedCompanySettingsRoute
+  '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/ai-employees': typeof AuthenticatedAiEmployeesIndexRoute
+  '/company': typeof AuthenticatedCompanyIndexRoute
+  '/developers': typeof AuthenticatedDevelopersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/_authenticated/ai-employees': typeof AuthenticatedAiEmployeesRouteWithChildren
+  '/_authenticated/applications': typeof AuthenticatedApplicationsRoute
+  '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
+  '/_authenticated/company': typeof AuthenticatedCompanyRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/developer': typeof AuthenticatedDeveloperRoute
+  '/_authenticated/developers': typeof AuthenticatedDevelopersRouteWithChildren
+  '/_authenticated/jobs': typeof AuthenticatedJobsRoute
+  '/_authenticated/messages': typeof AuthenticatedMessagesRoute
+  '/_authenticated/office': typeof AuthenticatedOfficeRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/team': typeof AuthenticatedTeamRoute
+  '/_authenticated/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
+  '/_authenticated/company/settings': typeof AuthenticatedCompanySettingsRoute
+  '/_authenticated/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/_authenticated/ai-employees/': typeof AuthenticatedAiEmployeesIndexRoute
+  '/_authenticated/company/': typeof AuthenticatedCompanyIndexRoute
+  '/_authenticated/developers/': typeof AuthenticatedDevelopersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/ai-employees'
+    | '/applications'
+    | '/companies'
+    | '/company'
+    | '/dashboard'
+    | '/developer'
+    | '/developers'
+    | '/jobs'
+    | '/messages'
+    | '/office'
+    | '/settings'
+    | '/team'
+    | '/ai-employees/$aiEmployeeId'
+    | '/company/settings'
+    | '/developers/$developerId'
+    | '/ai-employees/'
+    | '/company/'
+    | '/developers/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/applications'
+    | '/companies'
+    | '/dashboard'
+    | '/developer'
+    | '/jobs'
+    | '/messages'
+    | '/office'
+    | '/settings'
+    | '/team'
+    | '/ai-employees/$aiEmployeeId'
+    | '/company/settings'
+    | '/developers/$developerId'
+    | '/ai-employees'
+    | '/company'
+    | '/developers'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/login'
+    | '/signup'
+    | '/_authenticated/ai-employees'
+    | '/_authenticated/applications'
+    | '/_authenticated/companies'
+    | '/_authenticated/company'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/developer'
+    | '/_authenticated/developers'
+    | '/_authenticated/jobs'
+    | '/_authenticated/messages'
+    | '/_authenticated/office'
+    | '/_authenticated/settings'
+    | '/_authenticated/team'
+    | '/_authenticated/ai-employees/$aiEmployeeId'
+    | '/_authenticated/company/settings'
+    | '/_authenticated/developers/$developerId'
+    | '/_authenticated/ai-employees/'
+    | '/_authenticated/company/'
+    | '/_authenticated/developers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +304,241 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/ai-employees': {
+      id: '/_authenticated/ai-employees'
+      path: '/ai-employees'
+      fullPath: '/ai-employees'
+      preLoaderRoute: typeof AuthenticatedAiEmployeesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/applications': {
+      id: '/_authenticated/applications'
+      path: '/applications'
+      fullPath: '/applications'
+      preLoaderRoute: typeof AuthenticatedApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/companies': {
+      id: '/_authenticated/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof AuthenticatedCompaniesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/company': {
+      id: '/_authenticated/company'
+      path: '/company'
+      fullPath: '/company'
+      preLoaderRoute: typeof AuthenticatedCompanyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer': {
+      id: '/_authenticated/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof AuthenticatedDeveloperRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developers': {
+      id: '/_authenticated/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof AuthenticatedDevelopersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/jobs': {
+      id: '/_authenticated/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AuthenticatedJobsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/messages': {
+      id: '/_authenticated/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AuthenticatedMessagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/office': {
+      id: '/_authenticated/office'
+      path: '/office'
+      fullPath: '/office'
+      preLoaderRoute: typeof AuthenticatedOfficeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/team': {
+      id: '/_authenticated/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AuthenticatedTeamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ai-employees/': {
+      id: '/_authenticated/ai-employees/'
+      path: '/'
+      fullPath: '/ai-employees/'
+      preLoaderRoute: typeof AuthenticatedAiEmployeesIndexRouteImport
+      parentRoute: typeof AuthenticatedAiEmployeesRoute
+    }
+    '/_authenticated/ai-employees/$aiEmployeeId': {
+      id: '/_authenticated/ai-employees/$aiEmployeeId'
+      path: '/$aiEmployeeId'
+      fullPath: '/ai-employees/$aiEmployeeId'
+      preLoaderRoute: typeof AuthenticatedAiEmployeesAiEmployeeIdRouteImport
+      parentRoute: typeof AuthenticatedAiEmployeesRoute
+    }
+    '/_authenticated/company/': {
+      id: '/_authenticated/company/'
+      path: '/'
+      fullPath: '/company/'
+      preLoaderRoute: typeof AuthenticatedCompanyIndexRouteImport
+      parentRoute: typeof AuthenticatedCompanyRoute
+    }
+    '/_authenticated/company/settings': {
+      id: '/_authenticated/company/settings'
+      path: '/settings'
+      fullPath: '/company/settings'
+      preLoaderRoute: typeof AuthenticatedCompanySettingsRouteImport
+      parentRoute: typeof AuthenticatedCompanyRoute
+    }
+    '/_authenticated/developers/': {
+      id: '/_authenticated/developers/'
+      path: '/'
+      fullPath: '/developers/'
+      preLoaderRoute: typeof AuthenticatedDevelopersIndexRouteImport
+      parentRoute: typeof AuthenticatedDevelopersRoute
+    }
+    '/_authenticated/developers/$developerId': {
+      id: '/_authenticated/developers/$developerId'
+      path: '/$developerId'
+      fullPath: '/developers/$developerId'
+      preLoaderRoute: typeof AuthenticatedDevelopersDeveloperIdRouteImport
+      parentRoute: typeof AuthenticatedDevelopersRoute
+    }
   }
 }
 
+interface AuthenticatedAiEmployeesRouteChildren {
+  AuthenticatedAiEmployeesAiEmployeeIdRoute: typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
+  AuthenticatedAiEmployeesIndexRoute: typeof AuthenticatedAiEmployeesIndexRoute
+}
+
+const AuthenticatedAiEmployeesRouteChildren: AuthenticatedAiEmployeesRouteChildren =
+  {
+    AuthenticatedAiEmployeesAiEmployeeIdRoute:
+      AuthenticatedAiEmployeesAiEmployeeIdRoute,
+    AuthenticatedAiEmployeesIndexRoute: AuthenticatedAiEmployeesIndexRoute,
+  }
+
+const AuthenticatedAiEmployeesRouteWithChildren =
+  AuthenticatedAiEmployeesRoute._addFileChildren(
+    AuthenticatedAiEmployeesRouteChildren,
+  )
+
+interface AuthenticatedCompanyRouteChildren {
+  AuthenticatedCompanySettingsRoute: typeof AuthenticatedCompanySettingsRoute
+  AuthenticatedCompanyIndexRoute: typeof AuthenticatedCompanyIndexRoute
+}
+
+const AuthenticatedCompanyRouteChildren: AuthenticatedCompanyRouteChildren = {
+  AuthenticatedCompanySettingsRoute: AuthenticatedCompanySettingsRoute,
+  AuthenticatedCompanyIndexRoute: AuthenticatedCompanyIndexRoute,
+}
+
+const AuthenticatedCompanyRouteWithChildren =
+  AuthenticatedCompanyRoute._addFileChildren(AuthenticatedCompanyRouteChildren)
+
+interface AuthenticatedDevelopersRouteChildren {
+  AuthenticatedDevelopersDeveloperIdRoute: typeof AuthenticatedDevelopersDeveloperIdRoute
+  AuthenticatedDevelopersIndexRoute: typeof AuthenticatedDevelopersIndexRoute
+}
+
+const AuthenticatedDevelopersRouteChildren: AuthenticatedDevelopersRouteChildren =
+  {
+    AuthenticatedDevelopersDeveloperIdRoute:
+      AuthenticatedDevelopersDeveloperIdRoute,
+    AuthenticatedDevelopersIndexRoute: AuthenticatedDevelopersIndexRoute,
+  }
+
+const AuthenticatedDevelopersRouteWithChildren =
+  AuthenticatedDevelopersRoute._addFileChildren(
+    AuthenticatedDevelopersRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAiEmployeesRoute: typeof AuthenticatedAiEmployeesRouteWithChildren
+  AuthenticatedApplicationsRoute: typeof AuthenticatedApplicationsRoute
+  AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
+  AuthenticatedCompanyRoute: typeof AuthenticatedCompanyRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRoute
+  AuthenticatedDevelopersRoute: typeof AuthenticatedDevelopersRouteWithChildren
+  AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
+  AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
+  AuthenticatedOfficeRoute: typeof AuthenticatedOfficeRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAiEmployeesRoute: AuthenticatedAiEmployeesRouteWithChildren,
+  AuthenticatedApplicationsRoute: AuthenticatedApplicationsRoute,
+  AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
+  AuthenticatedCompanyRoute: AuthenticatedCompanyRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDeveloperRoute: AuthenticatedDeveloperRoute,
+  AuthenticatedDevelopersRoute: AuthenticatedDevelopersRouteWithChildren,
+  AuthenticatedJobsRoute: AuthenticatedJobsRoute,
+  AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
+  AuthenticatedOfficeRoute: AuthenticatedOfficeRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTeamRoute: AuthenticatedTeamRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
