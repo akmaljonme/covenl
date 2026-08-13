@@ -14,12 +14,17 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthenticatedApplicationsRouteImport } from './routes/_authenticated/applications'
+import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedCompanyRouteImport } from './routes/_authenticated/company'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
+import { Route as AuthenticatedDevelopersRouteImport } from './routes/_authenticated/developers'
 import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedCompanyIndexRouteImport } from './routes/_authenticated/company.index'
 import { Route as AuthenticatedCompanySettingsRouteImport } from './routes/_authenticated/company.settings'
+import { Route as AuthenticatedDevelopersIndexRouteImport } from './routes/_authenticated/developers.index'
+import { Route as AuthenticatedDevelopersDeveloperIdRouteImport } from './routes/_authenticated/developers.$developerId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +51,11 @@ const AuthenticatedApplicationsRoute =
     path: '/applications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCompaniesRoute = AuthenticatedCompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCompanyRoute = AuthenticatedCompanyRouteImport.update({
   id: '/company',
   path: '/company',
@@ -54,6 +64,16 @@ const AuthenticatedCompanyRoute = AuthenticatedCompanyRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDeveloperRoute = AuthenticatedDeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDevelopersRoute = AuthenticatedDevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
@@ -78,29 +98,50 @@ const AuthenticatedCompanySettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedCompanyRoute,
   } as any)
+const AuthenticatedDevelopersIndexRoute =
+  AuthenticatedDevelopersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDevelopersRoute,
+  } as any)
+const AuthenticatedDevelopersDeveloperIdRoute =
+  AuthenticatedDevelopersDeveloperIdRouteImport.update({
+    id: '/$developerId',
+    path: '/$developerId',
+    getParentRoute: () => AuthenticatedDevelopersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/applications': typeof AuthenticatedApplicationsRoute
+  '/companies': typeof AuthenticatedCompaniesRoute
   '/company': typeof AuthenticatedCompanyRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/developer': typeof AuthenticatedDeveloperRoute
+  '/developers': typeof AuthenticatedDevelopersRouteWithChildren
   '/jobs': typeof AuthenticatedJobsRoute
   '/team': typeof AuthenticatedTeamRoute
   '/company/settings': typeof AuthenticatedCompanySettingsRoute
+  '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
   '/company/': typeof AuthenticatedCompanyIndexRoute
+  '/developers/': typeof AuthenticatedDevelopersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/applications': typeof AuthenticatedApplicationsRoute
+  '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/developer': typeof AuthenticatedDeveloperRoute
   '/jobs': typeof AuthenticatedJobsRoute
   '/team': typeof AuthenticatedTeamRoute
   '/company/settings': typeof AuthenticatedCompanySettingsRoute
+  '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
   '/company': typeof AuthenticatedCompanyIndexRoute
+  '/developers': typeof AuthenticatedDevelopersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -109,12 +150,17 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/applications': typeof AuthenticatedApplicationsRoute
+  '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/company': typeof AuthenticatedCompanyRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/developer': typeof AuthenticatedDeveloperRoute
+  '/_authenticated/developers': typeof AuthenticatedDevelopersRouteWithChildren
   '/_authenticated/jobs': typeof AuthenticatedJobsRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/_authenticated/company/settings': typeof AuthenticatedCompanySettingsRoute
+  '/_authenticated/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
   '/_authenticated/company/': typeof AuthenticatedCompanyIndexRoute
+  '/_authenticated/developers/': typeof AuthenticatedDevelopersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -123,23 +169,32 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/applications'
+    | '/companies'
     | '/company'
     | '/dashboard'
+    | '/developer'
+    | '/developers'
     | '/jobs'
     | '/team'
     | '/company/settings'
+    | '/developers/$developerId'
     | '/company/'
+    | '/developers/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
     | '/applications'
+    | '/companies'
     | '/dashboard'
+    | '/developer'
     | '/jobs'
     | '/team'
     | '/company/settings'
+    | '/developers/$developerId'
     | '/company'
+    | '/developers'
   id:
     | '__root__'
     | '/'
@@ -147,12 +202,17 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/applications'
+    | '/_authenticated/companies'
     | '/_authenticated/company'
     | '/_authenticated/dashboard'
+    | '/_authenticated/developer'
+    | '/_authenticated/developers'
     | '/_authenticated/jobs'
     | '/_authenticated/team'
     | '/_authenticated/company/settings'
+    | '/_authenticated/developers/$developerId'
     | '/_authenticated/company/'
+    | '/_authenticated/developers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -199,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedApplicationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/companies': {
+      id: '/_authenticated/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof AuthenticatedCompaniesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/company': {
       id: '/_authenticated/company'
       path: '/company'
@@ -211,6 +278,20 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer': {
+      id: '/_authenticated/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof AuthenticatedDeveloperRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developers': {
+      id: '/_authenticated/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof AuthenticatedDevelopersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/jobs': {
@@ -241,6 +322,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompanySettingsRouteImport
       parentRoute: typeof AuthenticatedCompanyRoute
     }
+    '/_authenticated/developers/': {
+      id: '/_authenticated/developers/'
+      path: '/'
+      fullPath: '/developers/'
+      preLoaderRoute: typeof AuthenticatedDevelopersIndexRouteImport
+      parentRoute: typeof AuthenticatedDevelopersRoute
+    }
+    '/_authenticated/developers/$developerId': {
+      id: '/_authenticated/developers/$developerId'
+      path: '/$developerId'
+      fullPath: '/developers/$developerId'
+      preLoaderRoute: typeof AuthenticatedDevelopersDeveloperIdRouteImport
+      parentRoute: typeof AuthenticatedDevelopersRoute
+    }
   }
 }
 
@@ -257,18 +352,41 @@ const AuthenticatedCompanyRouteChildren: AuthenticatedCompanyRouteChildren = {
 const AuthenticatedCompanyRouteWithChildren =
   AuthenticatedCompanyRoute._addFileChildren(AuthenticatedCompanyRouteChildren)
 
+interface AuthenticatedDevelopersRouteChildren {
+  AuthenticatedDevelopersDeveloperIdRoute: typeof AuthenticatedDevelopersDeveloperIdRoute
+  AuthenticatedDevelopersIndexRoute: typeof AuthenticatedDevelopersIndexRoute
+}
+
+const AuthenticatedDevelopersRouteChildren: AuthenticatedDevelopersRouteChildren =
+  {
+    AuthenticatedDevelopersDeveloperIdRoute:
+      AuthenticatedDevelopersDeveloperIdRoute,
+    AuthenticatedDevelopersIndexRoute: AuthenticatedDevelopersIndexRoute,
+  }
+
+const AuthenticatedDevelopersRouteWithChildren =
+  AuthenticatedDevelopersRoute._addFileChildren(
+    AuthenticatedDevelopersRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedApplicationsRoute: typeof AuthenticatedApplicationsRoute
+  AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedCompanyRoute: typeof AuthenticatedCompanyRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRoute
+  AuthenticatedDevelopersRoute: typeof AuthenticatedDevelopersRouteWithChildren
   AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedApplicationsRoute: AuthenticatedApplicationsRoute,
+  AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedCompanyRoute: AuthenticatedCompanyRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDeveloperRoute: AuthenticatedDeveloperRoute,
+  AuthenticatedDevelopersRoute: AuthenticatedDevelopersRouteWithChildren,
   AuthenticatedJobsRoute: AuthenticatedJobsRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
 }
