@@ -163,3 +163,71 @@
     radial-gradient(circle at 20% 10%, oklch(0.42 0.14 292 / 35%), transparent 55%),
     radial-gradient(circle at 85% 20%, oklch(0.78 0.145 205 / 22%), transparent 50%);
 }
+
+/* ---------- Virtual office (isometric HQ) ---------- */
+
+@utility office-night {
+  background:
+    radial-gradient(ellipse at 50% 0%, oklch(0.42 0.14 292 / 40%), transparent 60%),
+    radial-gradient(ellipse at 85% 15%, oklch(0.78 0.145 205 / 20%), transparent 55%),
+    linear-gradient(to bottom, oklch(0.13 0.03 265), oklch(0.19 0.04 268));
+}
+
+@utility office-skyline {
+  background-image:
+    linear-gradient(to top, oklch(0.78 0.145 205 / 14%), transparent 70%),
+    repeating-linear-gradient(
+      to right,
+      oklch(0.24 0.05 275 / 85%) 0 26px,
+      transparent 26px 34px,
+      oklch(0.2 0.045 272 / 85%) 34px 70px,
+      transparent 70px 82px
+    );
+  mask-image: linear-gradient(to top, transparent, oklch(0 0 0) 40%);
+}
+
+@utility office-floor {
+  background-image:
+    linear-gradient(oklch(0.78 0.145 205 / 8%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.42 0.14 292 / 10%) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility iso-stage {
+  transform: perspective(1600px) rotateX(22deg) rotateZ(-3deg);
+  transform-style: preserve-3d;
+}
+
+@utility glass-zone {
+  background: linear-gradient(
+    155deg,
+    oklch(1 0 0 / 8%),
+    oklch(0.42 0.14 292 / 12%) 45%,
+    oklch(0.78 0.145 205 / 8%)
+  );
+  border: 1px solid oklch(1 0 0 / 14%);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 10%) inset,
+    0 26px 60px -28px oklch(0 0 0 / 70%);
+}
+
+@utility desk-pod {
+  background: linear-gradient(160deg, oklch(0.27 0.05 272 / 92%), oklch(0.2 0.04 268 / 92%));
+  border: 1px solid oklch(1 0 0 / 12%);
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 8%) inset,
+    0 18px 34px -22px oklch(0 0 0 / 75%);
+}
+
+@utility rgb-strip {
+  background: linear-gradient(
+    90deg,
+    oklch(0.78 0.145 205),
+    oklch(0.55 0.16 292),
+    oklch(0.72 0.16 155)
+  );
+  filter: blur(0.3px);
+}

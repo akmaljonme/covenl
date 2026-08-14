@@ -221,6 +221,7 @@ export type Database = {
         Row: {
           ai_employee_id: string
           company_id: string
+          current_task: string
           hired_at: string
           id: string
           status: string
@@ -228,6 +229,7 @@ export type Database = {
         Insert: {
           ai_employee_id: string
           company_id: string
+          current_task?: string
           hired_at?: string
           id?: string
           status?: string
@@ -235,6 +237,7 @@ export type Database = {
         Update: {
           ai_employee_id?: string
           company_id?: string
+          current_task?: string
           hired_at?: string
           id?: string
           status?: string
@@ -300,6 +303,93 @@ export type Database = {
           },
         ]
       }
+      meeting_participants: {
+        Row: {
+          id: string
+          joined_at: string
+          meeting_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          meeting_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          meeting_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_participants_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meetings: {
+        Row: {
+          company_id: string
+          created_at: string
+          ended_at: string | null
+          host_id: string | null
+          id: string
+          started_at: string
+          status: Database["public"]["Enums"]["meeting_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          ended_at?: string | null
+          host_id?: string | null
+          id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["meeting_status"]
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          ended_at?: string | null
+          host_id?: string | null
+          id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["meeting_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meetings_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string
@@ -330,6 +420,42 @@ export type Database = {
             foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      presence: {
+        Row: {
+          company_id: string | null
+          last_seen_at: string
+          status: Database["public"]["Enums"]["presence_status"]
+          user_id: string
+        }
+        Insert: {
+          company_id?: string | null
+          last_seen_at?: string
+          status?: Database["public"]["Enums"]["presence_status"]
+          user_id: string
+        }
+        Update: {
+          company_id?: string | null
+          last_seen_at?: string
+          status?: Database["public"]["Enums"]["presence_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presence_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "presence_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -413,6 +539,8 @@ export type Database = {
       ai_level: "Beginner" | "Intermediate" | "Advanced" | "Expert"
       app_role: "director" | "developer"
       application_status: "pending" | "accepted" | "rejected"
+      meeting_status: "live" | "ended"
+      presence_status: "online" | "working" | "meeting" | "away" | "offline"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -543,6 +671,8 @@ export const Constants = {
       ai_level: ["Beginner", "Intermediate", "Advanced", "Expert"],
       app_role: ["director", "developer"],
       application_status: ["pending", "accepted", "rejected"],
+      meeting_status: ["live", "ended"],
+      presence_status: ["online", "working", "meeting", "away", "offline"],
     },
   },
 } as const

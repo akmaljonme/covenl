@@ -156,3 +156,113 @@ export async function fetchNotifications(userId: string): Promise<Notification[]
       .limit(20),
   );
 }
+
+/* ---------- Virtual office: presence, meetings ---------- */
+
+export type Presence = Tables["presence"]["Row"];
+export type PresenceStatus = Database["public"]["Enums"]["presence_status"];
+export type Meeting = Tables["meetings"]["Row"];
+export type MeetingParticipant = Tables["meeting_participants"]["Row"];
+
+export type PresenceRow = Presence & { profile: Pick<Profile, "id" | "full_name" | "role"> | null };
+export type MeetingRow = Meeting & {
+  host: Pick<Profile, "id" | "full_name"> | null;
+  participants: (MeetingParticipant & { profile: Pick<Profile, "id" | "full_name"> | null })[];
+};
+
+export const officeKeys = {
+  presence: (companyId: string) => ["presence", companyId] as const,
+  meetings: (companyId: string) => ["meetings", companyId] as const,
+  meeting: (id: string) => ["meeting", id] as const,
+};
+
+export async function fetchPresence(companyId: string) {
+  return unwrap(
+    await supabase
+      .from("presence")
+      .select("*, profile:profiles(id, full_name, role)")
+      .eq("company_id", companyId)
+      .order("last_seen_at", { ascending: false }),
+  ) as unknown as PresenceRow[];
+}
+
+export async function upsertPresence(input: {
+  userId: string;
+  companyId: string | null;
+  status: PresenceStatus;
+}) {
+  const { error } = await supabase.from("presence").upsert(
+    {
+      user_id: input.userId,
+      company_id: input.companyId,
+      status: input.status,
+      last_seen_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" },
+  );
+  if (error) throw new Error(error.message);
+}
+
+const meetingSelect =
+  "*, host:profiles!meetings_host_id_fkey(id, full_name), participants:meeting_participants(*, profile:profiles(id, full_name))";
+
+export async function fetchLiveMeetings(companyId: string) {
+  return unwrap(
+    await supabase
+      .from("meetings")
+      .select(meetingSelect)
+      .eq("company_id", companyId)
+      .eq("status", "live")
+      .order("started_at", { ascending: false }),
+  ) as unknown as MeetingRow[];
+}
+
+export async function fetchMeeting(id: string) {
+  return unwrap(
+    await supabase.from("meetings").select(meetingSelect).eq("id", id).maybeSingle(),
+  ) as unknown as MeetingRow | null;
+}
+
+export async function startMeeting(input: { companyId: string; hostId: string; title: string }) {
+  const { data, error } = await supabase
+    .from("meetings")
+    .insert({ company_id: input.companyId, host_id: input.hostId, title: input.title })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  const id = data.id;
+  await joinMeeting(id, input.hostId);
+  return id;
+}
+
+export async function joinMeeting(meetingId: string, userId: string) {
+  const { error } = await supabase
+    .from("meeting_participants")
+    .upsert({ meeting_id: meetingId, user_id: userId }, { onConflict: "meeting_id,user_id" });
+  if (error) throw new Error(error.message);
+}
+
+export async function leaveMeeting(meetingId: string, userId: string) {
+  const { error } = await supabase
+    .from("meeting_participants")
+    .delete()
+    .eq("meeting_id", meetingId)
+    .eq("user_id", userId);
+  if (error) throw new Error(error.message);
+}
+
+export async function endMeeting(meetingId: string) {
+  const { error } = await supabase
+    .from("meetings")
+    .update({ status: "ended", ended_at: new Date().toISOString() })
+    .eq("id", meetingId);
+  if (error) throw new Error(error.message);
+}
+
+export async function updateAiTask(hiredId: string, task: string) {
+  const { error } = await supabase
+    .from("hired_ai_employees")
+    .update({ current_task: task })
+    .eq("id", hiredId);
+  if (error) throw new Error(error.message);
+}
