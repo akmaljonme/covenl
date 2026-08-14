@@ -166,7 +166,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   function submitSearch(event: React.FormEvent) {
     event.preventDefault();
-    navigate({ to: "/jobs", search: { q: query || undefined } });
+    navigate({ to: "/jobs", search: query ? { q: query } : {} });
   }
 
   return (
