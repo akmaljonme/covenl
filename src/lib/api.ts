@@ -224,14 +224,13 @@ export async function fetchMeeting(id: string) {
 }
 
 export async function startMeeting(input: { companyId: string; hostId: string; title: string }) {
-  const meeting = unwrap(
-    await supabase
-      .from("meetings")
-      .insert({ company_id: input.companyId, host_id: input.hostId, title: input.title })
-      .select("id")
-      .single(),
-  );
-  const id = (meeting as { id: string }).id;
+  const { data, error } = await supabase
+    .from("meetings")
+    .insert({ company_id: input.companyId, host_id: input.hostId, title: input.title })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  const id = data.id;
   await joinMeeting(id, input.hostId);
   return id;
 }
