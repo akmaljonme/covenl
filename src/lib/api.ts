@@ -231,8 +231,9 @@ export async function startMeeting(input: { companyId: string; hostId: string; t
       .select("id")
       .single(),
   );
-  await joinMeeting(meeting.id, input.hostId);
-  return meeting.id;
+  const id = (meeting as { id: string }).id;
+  await joinMeeting(id, input.hostId);
+  return id;
 }
 
 export async function joinMeeting(meetingId: string, userId: string) {
