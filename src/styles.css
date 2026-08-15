@@ -168,58 +168,113 @@
 
 @utility office-night {
   background:
-    radial-gradient(ellipse at 50% 0%, oklch(0.42 0.14 292 / 40%), transparent 60%),
-    radial-gradient(ellipse at 85% 15%, oklch(0.78 0.145 205 / 20%), transparent 55%),
-    linear-gradient(to bottom, oklch(0.13 0.03 265), oklch(0.19 0.04 268));
+    radial-gradient(ellipse at 50% -10%, oklch(0.42 0.14 292 / 45%), transparent 55%),
+    radial-gradient(ellipse at 90% 10%, oklch(0.78 0.145 205 / 22%), transparent 50%),
+    radial-gradient(ellipse at 5% 30%, oklch(0.55 0.16 292 / 18%), transparent 45%),
+    linear-gradient(to bottom, oklch(0.115 0.028 265), oklch(0.155 0.032 267) 45%, oklch(0.19 0.038 268));
 }
 
 @utility office-skyline {
   background-image:
-    linear-gradient(to top, oklch(0.78 0.145 205 / 14%), transparent 70%),
+    linear-gradient(to top, oklch(0.78 0.145 205 / 16%), transparent 75%),
     repeating-linear-gradient(
       to right,
-      oklch(0.24 0.05 275 / 85%) 0 26px,
-      transparent 26px 34px,
-      oklch(0.2 0.045 272 / 85%) 34px 70px,
-      transparent 70px 82px
+      oklch(0.26 0.05 275 / 90%) 0 22px,
+      transparent 22px 30px,
+      oklch(0.21 0.045 272 / 90%) 30px 58px,
+      transparent 58px 68px,
+      oklch(0.24 0.048 274 / 90%) 68px 96px,
+      transparent 96px 108px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 6px,
+      oklch(0.78 0.145 205 / 6%) 6px 7px
     );
-  mask-image: linear-gradient(to top, transparent, oklch(0 0 0) 40%);
+  mask-image: linear-gradient(to top, transparent, oklch(0 0 0) 55%);
 }
 
 @utility office-floor {
+  position: relative;
   background-image:
-    linear-gradient(oklch(0.78 0.145 205 / 8%) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.42 0.14 292 / 10%) 1px, transparent 1px);
-  background-size: 56px 56px;
+    linear-gradient(oklch(0.78 0.145 205 / 7%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.42 0.14 292 / 9%) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
-@utility iso-stage {
-  transform: perspective(1600px) rotateX(22deg) rotateZ(-3deg);
-  transform-style: preserve-3d;
+@utility office-floor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 50% 30%, oklch(0.42 0.14 292 / 14%), transparent 60%);
+  pointer-events: none;
 }
 
 @utility glass-zone {
+  position: relative;
   background: linear-gradient(
     155deg,
-    oklch(1 0 0 / 8%),
-    oklch(0.42 0.14 292 / 12%) 45%,
-    oklch(0.78 0.145 205 / 8%)
+    oklch(1 0 0 / 9%),
+    oklch(0.42 0.14 292 / 13%) 45%,
+    oklch(0.78 0.145 205 / 9%)
   );
   border: 1px solid oklch(1 0 0 / 14%);
   border-radius: var(--radius-2xl);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
   box-shadow:
-    0 1px 0 0 oklch(1 0 0 / 10%) inset,
-    0 26px 60px -28px oklch(0 0 0 / 70%);
+    0 1px 0 0 oklch(1 0 0 / 12%) inset,
+    0 26px 60px -28px oklch(0 0 0 / 75%);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+@utility glass-zone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(155deg, oklch(1 0 0 / 22%), transparent 30%, transparent 70%, oklch(0.78 0.145 205 / 18%));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@utility zone-accent-cyan {
+  border-color: oklch(0.78 0.145 205 / 30%);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 12%) inset,
+    0 0 0 1px oklch(0.78 0.145 205 / 12%),
+    0 26px 60px -28px oklch(0 0 0 / 75%);
+}
+
+@utility zone-accent-purple {
+  border-color: oklch(0.55 0.16 292 / 35%);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 12%) inset,
+    0 0 0 1px oklch(0.55 0.16 292 / 14%),
+    0 26px 60px -28px oklch(0 0 0 / 75%);
 }
 
 @utility desk-pod {
-  background: linear-gradient(160deg, oklch(0.27 0.05 272 / 92%), oklch(0.2 0.04 268 / 92%));
+  position: relative;
+  background: linear-gradient(160deg, oklch(0.27 0.05 272 / 94%), oklch(0.185 0.038 267 / 94%));
   border: 1px solid oklch(1 0 0 / 12%);
   border-radius: var(--radius-2xl);
   box-shadow:
     0 1px 0 0 oklch(1 0 0 / 8%) inset,
     0 18px 34px -22px oklch(0 0 0 / 75%);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+@utility desk-pod-hover {
+  transform: perspective(700px) rotateX(4deg) translateY(-4px);
+  border-color: oklch(0.78 0.145 205 / 35%);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 10%) inset,
+    0 0 0 1px oklch(0.78 0.145 205 / 18%),
+    0 26px 44px -20px oklch(0 0 0 / 80%);
 }
 
 @utility rgb-strip {
@@ -229,5 +284,48 @@
     oklch(0.55 0.16 292),
     oklch(0.72 0.16 155)
   );
-  filter: blur(0.3px);
+}
+
+@utility online-avatar {
+  border: 2px solid oklch(0.15 0.03 265);
+}
+
+/* ---------- Living floor: actors walk between real desk/meeting/lounge slots ---------- */
+
+@utility office-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  min-height: 480px;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+}
+
+@utility office-actor {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  transition:
+    left 1.15s cubic-bezier(0.65, 0, 0.35, 1),
+    top 1.15s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.4s ease;
+  will-change: left, top;
+}
+
+@utility office-furniture {
+  position: absolute;
+  transform: translate(-50%, -78%);
+}
+
+@keyframes office-idle-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@utility office-idle-bob {
+  animation: office-idle-bob 3.4s ease-in-out infinite;
 }
