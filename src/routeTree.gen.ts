@@ -31,6 +31,7 @@ import { Route as AuthenticatedCompanyIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedCompanySettingsRouteImport } from './routes/_authenticated/company.settings'
 import { Route as AuthenticatedDevelopersIndexRouteImport } from './routes/_authenticated/developers.index'
 import { Route as AuthenticatedDevelopersDeveloperIdRouteImport } from './routes/_authenticated/developers.$developerId'
+import { Route as AuthenticatedMeetingMeetingIdRouteImport } from './routes/_authenticated/meeting.$meetingId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -149,6 +150,12 @@ const AuthenticatedDevelopersDeveloperIdRoute =
     path: '/$developerId',
     getParentRoute: () => AuthenticatedDevelopersRoute,
   } as any)
+const AuthenticatedMeetingMeetingIdRoute =
+  AuthenticatedMeetingMeetingIdRouteImport.update({
+    id: '/meeting/$meetingId',
+    path: '/meeting/$meetingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
   '/company/settings': typeof AuthenticatedCompanySettingsRoute
   '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/meeting/$meetingId': typeof AuthenticatedMeetingMeetingIdRoute
   '/ai-employees/': typeof AuthenticatedAiEmployeesIndexRoute
   '/company/': typeof AuthenticatedCompanyIndexRoute
   '/developers/': typeof AuthenticatedDevelopersIndexRoute
@@ -189,6 +197,7 @@ export interface FileRoutesByTo {
   '/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
   '/company/settings': typeof AuthenticatedCompanySettingsRoute
   '/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/meeting/$meetingId': typeof AuthenticatedMeetingMeetingIdRoute
   '/ai-employees': typeof AuthenticatedAiEmployeesIndexRoute
   '/company': typeof AuthenticatedCompanyIndexRoute
   '/developers': typeof AuthenticatedDevelopersIndexRoute
@@ -214,6 +223,7 @@ export interface FileRoutesById {
   '/_authenticated/ai-employees/$aiEmployeeId': typeof AuthenticatedAiEmployeesAiEmployeeIdRoute
   '/_authenticated/company/settings': typeof AuthenticatedCompanySettingsRoute
   '/_authenticated/developers/$developerId': typeof AuthenticatedDevelopersDeveloperIdRoute
+  '/_authenticated/meeting/$meetingId': typeof AuthenticatedMeetingMeetingIdRoute
   '/_authenticated/ai-employees/': typeof AuthenticatedAiEmployeesIndexRoute
   '/_authenticated/company/': typeof AuthenticatedCompanyIndexRoute
   '/_authenticated/developers/': typeof AuthenticatedDevelopersIndexRoute
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/ai-employees/$aiEmployeeId'
     | '/company/settings'
     | '/developers/$developerId'
+    | '/meeting/$meetingId'
     | '/ai-employees/'
     | '/company/'
     | '/developers/'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/ai-employees/$aiEmployeeId'
     | '/company/settings'
     | '/developers/$developerId'
+    | '/meeting/$meetingId'
     | '/ai-employees'
     | '/company'
     | '/developers'
@@ -283,6 +295,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ai-employees/$aiEmployeeId'
     | '/_authenticated/company/settings'
     | '/_authenticated/developers/$developerId'
+    | '/_authenticated/meeting/$meetingId'
     | '/_authenticated/ai-employees/'
     | '/_authenticated/company/'
     | '/_authenticated/developers/'
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDevelopersDeveloperIdRouteImport
       parentRoute: typeof AuthenticatedDevelopersRoute
     }
+    '/_authenticated/meeting/$meetingId': {
+      id: '/_authenticated/meeting/$meetingId'
+      path: '/meeting/$meetingId'
+      fullPath: '/meeting/$meetingId'
+      preLoaderRoute: typeof AuthenticatedMeetingMeetingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -514,6 +534,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOfficeRoute: typeof AuthenticatedOfficeRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
+  AuthenticatedMeetingMeetingIdRoute: typeof AuthenticatedMeetingMeetingIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -529,6 +550,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOfficeRoute: AuthenticatedOfficeRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
+  AuthenticatedMeetingMeetingIdRoute: AuthenticatedMeetingMeetingIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
