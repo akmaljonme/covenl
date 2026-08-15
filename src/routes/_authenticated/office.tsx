@@ -5,23 +5,21 @@ import {
   Camera,
   DoorOpen,
   FolderKanban,
-  LogIn,
   MessageSquare,
   Mic,
   Monitor,
-  Sparkles,
+  MoreHorizontal,
   Users,
   Video,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { LogoWordmark } from "@/components/brand/Logo";
+import officeFloor from "@/assets/office-floor.jpg";
 import { EmptyState, LoadingRow } from "@/components/common/States";
 import { SkillList } from "@/components/common/SkillList";
-import { DeskFurniture, Plant, StatusPill, ZoneLabel } from "@/components/office/OfficeParts";
+import { StatusPill, statusLabel, statusTone } from "@/components/office/OfficeParts";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -72,7 +70,18 @@ export const Route = createFileRoute("/_authenticated/office")({
   component: OfficePage,
 });
 
-const DESK_SLOTS = 4;
+/** Desk anchor points measured against the rendered office floor image. */
+const DEV_DESKS = [
+  { left: "34%", top: "33%" },
+  { left: "48.5%", top: "33%" },
+  { left: "62%", top: "33%" },
+];
+const AI_DESKS = [
+  { left: "21%", top: "64%" },
+  { left: "75%", top: "64%" },
+];
+const RECEPTION = { left: "50%", top: "11%" };
+const MEETING_ROOM = { left: "81%", top: "20%" };
 
 function OfficePage() {
   const { profile, user } = useAuth();
@@ -84,6 +93,7 @@ function OfficePage() {
   const [openDeveloper, setOpenDeveloper] = useState<TeamMemberRow | null>(null);
   const [openAi, setOpenAi] = useState<HiredAiRow | null>(null);
   const [taskDraft, setTaskDraft] = useState("");
+  const [moreOpen, setMoreOpen] = useState(false);
 
   usePresence({ userId: user?.id ?? null, companyId });
 
@@ -226,340 +236,298 @@ function OfficePage() {
   const aiRows = hiredAi.data ?? [];
   const liveMeetings = meetings.data ?? [];
   const onlineNow = (presence.data ?? []).filter((row) => row.status !== "offline");
+  const liveMeeting = liveMeetings[0] ?? null;
+
+  const enterMeeting = () =>
+    liveMeeting ? joinMutation.mutate(liveMeeting.id) : startMeetingMutation.mutate();
+
+  const activity = [
+    ...teamRows.slice(0, 5).map((member) => ({
+      id: `dev-${member.id}`,
+      name: member.developer?.full_name ?? "Developer",
+      detail: member.developer?.headline || member.role_title,
+      status: statusOf(member.developer?.user_id),
+    })),
+    ...aiRows.slice(0, 5).map((hire) => ({
+      id: `ai-${hire.id}`,
+      name: hire.ai_employee?.name ?? "AI employee",
+      detail: hire.current_task || hire.ai_employee?.role || "Idle",
+      status: (hire.status === "active" ? "working" : "offline") as PresenceStatus,
+    })),
+  ];
 
   return (
     <TooltipProvider delayDuration={120}>
-      <section className="office-night relative overflow-hidden rounded-3xl border border-border p-4 sm:p-8">
-        <span
-          className="office-skyline pointer-events-none absolute inset-x-0 top-0 h-48 opacity-50"
-          aria-hidden
-        />
-        <span
-          className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-secondary/25 blur-3xl"
-          aria-hidden
-        />
+      <section className="relative overflow-hidden rounded-3xl border border-border bg-background">
+        {/* Rendered HQ floor */}
+        <div className="relative aspect-[16/10] w-full">
+          <img
+            src={officeFloor}
+            alt={`${company.name} virtual headquarters floor`}
+            width={1920}
+            height={1200}
+            className="absolute inset-0 size-full object-cover"
+          />
+          <span
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/70"
+            aria-hidden
+          />
 
-        <header className="relative z-10 flex flex-col items-center gap-2 pb-8 text-center">
-          <LogoWordmark size={40} />
-          <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">{company.name}</h1>
-          <p className="text-xs font-medium tracking-[0.28em] text-primary uppercase">
-            Build Your Company
-          </p>
-          <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
-            <Badge variant="outline">{onlineNow.length} live now</Badge>
-            <Badge variant="outline">{teamRows.length} developers</Badge>
-            <Badge variant="outline">{aiRows.length} AI employees</Badge>
-          </div>
-        </header>
-
-        <div className="office-floor iso-stage relative z-10 grid gap-4 rounded-2xl p-3 sm:p-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
-          {/* Reception */}
-          <div className="glass-zone flex flex-col gap-4 p-4">
-            <ZoneLabel icon={<DoorOpen className="size-3.5" />}>Director reception</ZoneLabel>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => void navigate({ to: "/dashboard" })}
-                  className="desk-pod group flex flex-col items-center gap-3 p-4 text-center transition-transform hover:-translate-y-1"
-                >
-                  <DeskFurniture monitors={2} glow />
-                  <Avatar className="size-12 ring-2 ring-primary/50">
-                    <AvatarFallback className="bg-secondary text-secondary-foreground">
-                      {getInitials(directorName)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{directorName}</p>
-                    <p className="text-xs text-muted-foreground">Director</p>
-                  </div>
-                  <StatusPill status={statusOf(company.owner_id)} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {directorName} · Director · running {company.name} — open company dashboard
-              </TooltipContent>
-            </Tooltip>
-            <div className="flex items-end justify-between">
-              <Plant />
-              <span className="h-10 w-16 rounded-t-2xl border border-border bg-card/60" aria-hidden />
-              <Plant />
-            </div>
+          {/* Company sign */}
+          <div className="absolute top-3 left-4 z-20 rounded-xl border border-border bg-background/70 px-3 py-2 backdrop-blur-md sm:top-5 sm:left-6">
+            <p className="text-sm font-semibold tracking-[0.18em] text-foreground uppercase">
+              {company.name}
+            </p>
+            <p className="text-[0.6rem] tracking-[0.28em] text-primary uppercase">
+              Build your company
+            </p>
           </div>
 
-          {/* Desk floor */}
-          <div className="flex flex-col gap-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="glass-zone flex flex-col gap-3 p-4">
-                <ZoneLabel icon={<Users className="size-3.5" />}>Developer bay</ZoneLabel>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {Array.from({ length: Math.max(DESK_SLOTS, teamRows.length) }).map(
-                    (_, index) => {
-                      const member = teamRows[index];
-                      if (!member) {
-                        return (
-                          <Link
-                            key={`open-${index}`}
-                            to="/jobs"
-                            className="desk-pod flex flex-col items-center gap-2 p-3 text-center opacity-60 transition hover:opacity-100"
-                          >
-                            <DeskFurniture monitors={3} />
-                            <p className="text-xs text-muted-foreground">Open seat</p>
-                            <span className="text-[0.6rem] tracking-[0.14em] text-primary uppercase">
-                              Post a job
-                            </span>
-                          </Link>
-                        );
-                      }
-                      const name = member.developer?.full_name ?? "Developer";
-                      const status = statusOf(member.developer?.user_id);
-                      return (
-                        <Tooltip key={member.id}>
-                          <TooltipTrigger asChild>
-                            <button
-                              onClick={() => setOpenDeveloper(member)}
-                              className="desk-pod flex flex-col items-center gap-2 p-3 text-center transition-transform hover:-translate-y-1"
-                            >
-                              <DeskFurniture monitors={3} glow={status !== "offline"} />
-                              <Avatar className="size-10">
-                                <AvatarFallback className="bg-secondary text-secondary-foreground">
-                                  {getInitials(name)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <p className="w-full truncate text-sm font-semibold text-foreground">
-                                {name}
-                              </p>
-                              <p className="w-full truncate text-xs text-muted-foreground">
-                                {member.role_title}
-                              </p>
-                              <StatusPill status={status} />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {name} · {member.role_title} ·{" "}
-                            {member.developer?.headline || "No current headline"}
-                          </TooltipContent>
-                        </Tooltip>
-                      );
-                    },
-                  )}
-                </div>
-              </div>
-
-              <div className="glass-zone flex flex-col gap-3 p-4">
-                <ZoneLabel icon={<Bot className="size-3.5" />}>AI employee bay</ZoneLabel>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {Array.from({ length: Math.max(DESK_SLOTS, aiRows.length) }).map((_, index) => {
-                    const hire = aiRows[index];
-                    if (!hire) {
-                      return (
-                        <Link
-                          key={`ai-open-${index}`}
-                          to="/ai-employees"
-                          className="desk-pod flex flex-col items-center gap-2 p-3 text-center opacity-60 transition hover:opacity-100"
-                        >
-                          <DeskFurniture monitors={2} />
-                          <p className="text-xs text-muted-foreground">Free AI pod</p>
-                          <span className="text-[0.6rem] tracking-[0.14em] text-primary uppercase">
-                            Hire AI
-                          </span>
-                        </Link>
-                      );
-                    }
-                    return (
-                      <Tooltip key={hire.id}>
-                        <TooltipTrigger asChild>
-                          <button
-                            onClick={() => {
-                              setOpenAi(hire);
-                              setTaskDraft(hire.current_task ?? "");
-                            }}
-                            className="desk-pod flex flex-col items-center gap-2 p-3 text-center transition-transform hover:-translate-y-1"
-                          >
-                            <DeskFurniture monitors={2} glow={hire.status === "active"} />
-                            <span className="flex size-10 items-center justify-center rounded-xl border border-border bg-accent text-lg">
-                              {hire.ai_employee?.avatar ?? "🤖"}
-                            </span>
-                            <p className="w-full truncate text-sm font-semibold text-foreground">
-                              {hire.ai_employee?.name ?? "AI employee"}
-                            </p>
-                            <p className="w-full truncate text-xs text-muted-foreground">
-                              {hire.ai_employee?.level} · ${hire.ai_employee?.monthly_price}/mo
-                            </p>
-                            <StatusPill status={hire.status === "active" ? "working" : "offline"} />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {hire.ai_employee?.role ?? "AI"} ·{" "}
-                          {hire.current_task ? hire.current_task : "No task assigned yet"}
-                        </TooltipContent>
-                      </Tooltip>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Lounge */}
-            <div className="glass-zone flex flex-col gap-3 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <ZoneLabel icon={<Sparkles className="size-3.5" />}>Lounge</ZoneLabel>
-                <Plant />
-              </div>
-              {onlineNow.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  The lounge is quiet — nobody is in the office right now.
-                </p>
-              ) : (
-                <ul className="flex flex-wrap gap-2">
-                  {onlineNow.map((row) => (
-                    <li
-                      key={row.user_id}
-                      className="flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1.5"
-                    >
-                      <Avatar className="size-7">
-                        <AvatarFallback className="bg-secondary text-[0.6rem] text-secondary-foreground">
-                          {getInitials(row.profile?.full_name || "Member")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-xs font-medium text-foreground">
-                        {row.profile?.full_name || "Member"}
-                      </span>
-                      <StatusPill status={row.status} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          {/* Meeting room + quick access */}
-          <div className="flex flex-col gap-4">
-            <div className="glass-zone flex flex-col gap-3 border-primary/30 p-4">
-              <ZoneLabel icon={<Video className="size-3.5" />}>Glass meeting room</ZoneLabel>
-              {liveMeetings.length === 0 ? (
-                <>
-                  <p className="text-sm text-muted-foreground">No meeting running right now.</p>
-                  <Button
-                    size="sm"
-                    onClick={() => startMeetingMutation.mutate()}
-                    disabled={startMeetingMutation.isPending}
-                  >
-                    <Video className="size-4" /> Start meeting
-                  </Button>
-                </>
-              ) : (
-                <ul className="flex flex-col gap-3">
-                  {liveMeetings.map((meeting) => (
-                    <li key={meeting.id} className="rounded-xl border border-border bg-card/70 p-3">
-                      <p className="text-sm font-semibold text-foreground">{meeting.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Hosted by {meeting.host?.full_name || "Director"} ·{" "}
-                        {meeting.participants.length} in the room
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {meeting.participants.map((participant) => (
-                          <Avatar key={participant.id} className="size-6">
-                            <AvatarFallback className="bg-secondary text-[0.55rem] text-secondary-foreground">
-                              {getInitials(participant.profile?.full_name || "M")}
-                            </AvatarFallback>
-                          </Avatar>
-                        ))}
-                      </div>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => joinMutation.mutate(meeting.id)}
-                          disabled={joinMutation.isPending}
-                        >
-                          <LogIn className="size-4" /> Join meeting
-                        </Button>
-                        {meeting.host_id === user?.id || company.owner_id === user?.id ? (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => endMutation.mutate(meeting.id)}
-                            disabled={endMutation.isPending}
-                          >
-                            End
-                          </Button>
-                        ) : null}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="grid grid-cols-4 gap-1.5 pt-1" aria-hidden>
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <span key={index} className="h-5 rounded-md border border-border bg-card/50" />
-                ))}
-              </div>
-            </div>
-
-            <div className="glass-zone flex flex-col gap-2 p-4">
-              <ZoneLabel icon={<FolderKanban className="size-3.5" />}>Quick access</ZoneLabel>
-              {[
-                { to: "/team", label: "Team roster" },
-                { to: "/applications", label: "Applications" },
-                { to: "/jobs", label: "Job board" },
-                { to: "/ai-employees", label: "AI marketplace" },
-                { to: "/company", label: "Company profile" },
-              ].map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="rounded-lg border border-border bg-card/60 px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent"
-                >
-                  {item.label}
-                </Link>
+          {/* Online now */}
+          <div className="absolute top-3 right-4 z-20 flex items-center gap-2 rounded-xl border border-border bg-background/70 px-3 py-2 backdrop-blur-md sm:top-5 sm:right-6">
+            <span className="text-[0.6rem] leading-tight tracking-[0.14em] text-muted-foreground uppercase">
+              Online
+              <br />
+              now
+            </span>
+            <div className="flex -space-x-2">
+              {onlineNow.slice(0, 4).map((row) => (
+                <Avatar key={row.user_id} className="size-7 ring-2 ring-background">
+                  <AvatarFallback className="bg-secondary text-[0.55rem] text-secondary-foreground">
+                    {getInitials(row.profile?.full_name || "Member")}
+                  </AvatarFallback>
+                </Avatar>
               ))}
             </div>
+            {onlineNow.length > 4 ? (
+              <span className="text-xs text-muted-foreground">+{onlineNow.length - 4}</span>
+            ) : null}
+          </div>
+
+          {/* Director at reception */}
+          <Nameplate
+            position={RECEPTION}
+            name={directorName}
+            role="Director"
+            status={statusOf(company.owner_id)}
+            tooltip={`${directorName} · Director · open company dashboard`}
+            onClick={() => void navigate({ to: "/dashboard" })}
+          />
+
+          {/* Meeting room */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={enterMeeting}
+                style={{ left: MEETING_ROOM.left, top: MEETING_ROOM.top }}
+                className="absolute z-20 -translate-x-1/2 rounded-lg border border-primary/40 bg-background/75 px-3 py-1.5 text-center backdrop-blur-md transition hover:-translate-y-0.5 hover:border-primary"
+              >
+                <p className="text-xs font-semibold text-foreground">Meeting Room</p>
+                <p className="text-[0.6rem] text-muted-foreground">
+                  {liveMeeting
+                    ? `Live · ${liveMeeting.participants.length} inside`
+                    : "Start a meeting"}
+                </p>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {liveMeeting
+                ? `${liveMeeting.title} — hosted by ${liveMeeting.host?.full_name || "Director"}`
+                : "No meeting running — click to start one"}
+            </TooltipContent>
+          </Tooltip>
+
+          {liveMeeting && (liveMeeting.host_id === user?.id || company.owner_id === user?.id) ? (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => endMutation.mutate(liveMeeting.id)}
+              disabled={endMutation.isPending}
+              className="absolute z-20 -translate-x-1/2"
+              style={{ left: MEETING_ROOM.left, top: "30%" }}
+            >
+              End meeting
+            </Button>
+          ) : null}
+
+          {/* Developer desks */}
+          {DEV_DESKS.map((slot, index) => {
+            const member = teamRows[index];
+            if (!member) {
+              return (
+                <Tooltip key={`open-desk-${index}`}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      to="/jobs"
+                      style={slot}
+                      className="absolute z-20 -translate-x-1/2 rounded-lg border border-dashed border-border bg-background/60 px-3 py-1.5 text-center backdrop-blur-md transition hover:border-primary"
+                    >
+                      <p className="text-xs font-semibold text-foreground">Open seat</p>
+                      <p className="text-[0.6rem] tracking-[0.14em] text-primary uppercase">
+                        Post a job
+                      </p>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>Empty desk — hire a developer</TooltipContent>
+                </Tooltip>
+              );
+            }
+            const name = member.developer?.full_name ?? "Developer";
+            return (
+              <Nameplate
+                key={member.id}
+                position={slot}
+                name={name}
+                role={member.role_title}
+                status={statusOf(member.developer?.user_id)}
+                tooltip={`${name} · ${member.role_title} · ${member.developer?.headline || "No headline yet"}`}
+                onClick={() => setOpenDeveloper(member)}
+              />
+            );
+          })}
+
+          {/* AI desks */}
+          {AI_DESKS.map((slot, index) => {
+            const hire = aiRows[index];
+            if (!hire) {
+              return (
+                <Tooltip key={`open-ai-${index}`}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      to="/ai-employees"
+                      style={slot}
+                      className="absolute z-20 -translate-x-1/2 rounded-lg border border-dashed border-border bg-background/60 px-3 py-1.5 text-center backdrop-blur-md transition hover:border-primary"
+                    >
+                      <p className="text-xs font-semibold text-foreground">Free AI pod</p>
+                      <p className="text-[0.6rem] tracking-[0.14em] text-primary uppercase">
+                        Hire AI
+                      </p>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>Empty AI pod — hire an AI employee</TooltipContent>
+                </Tooltip>
+              );
+            }
+            return (
+              <Nameplate
+                key={hire.id}
+                position={slot}
+                name={hire.ai_employee?.name ?? "AI employee"}
+                role={`${hire.ai_employee?.level ?? "AI"} · $${hire.ai_employee?.monthly_price ?? 0}/mo`}
+                status={hire.status === "active" ? "working" : "offline"}
+                tooltip={`${hire.ai_employee?.role ?? "AI"} · ${hire.current_task || "No task assigned yet"}`}
+                onClick={() => {
+                  setOpenAi(hire);
+                  setTaskDraft(hire.current_task ?? "");
+                }}
+              />
+            );
+          })}
+
+          {/* Team activity board */}
+          <aside className="absolute right-3 bottom-24 z-20 hidden w-56 flex-col gap-2 rounded-xl border border-border bg-background/75 p-3 backdrop-blur-md lg:flex">
+            <p className="text-[0.6rem] font-semibold tracking-[0.22em] text-muted-foreground uppercase">
+              Team activity
+            </p>
+            {activity.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No team members yet.</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {activity.map((item) => (
+                  <li key={item.id} className="flex items-start gap-2">
+                    <span
+                      className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", statusTone[item.status])}
+                    />
+                    <div className="min-w-0">
+                      <p className="truncate text-xs font-medium text-foreground">{item.name}</p>
+                      <p className="truncate text-[0.65rem] text-muted-foreground">{item.detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </aside>
+
+          {/* Floating dock */}
+          <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
+            <div className="flex items-center gap-1 rounded-2xl border border-border bg-background/80 px-2 py-2 backdrop-blur-xl">
+              <DockButton icon={<Mic className="size-4" />} label="Mic" onClick={enterMeeting} />
+              <DockButton
+                icon={<Camera className="size-4" />}
+                label="Camera"
+                onClick={enterMeeting}
+              />
+              <DockButton
+                icon={<MessageSquare className="size-4" />}
+                label="Chat"
+                onClick={() => void navigate({ to: "/messages" })}
+              />
+              <DockButton
+                icon={<MoreHorizontal className="size-4" />}
+                label="More"
+                onClick={() => setMoreOpen(true)}
+              />
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => void navigate({ to: "/dashboard" })}
+                className="ml-1"
+              >
+                <DoorOpen className="size-4" /> Leave Office
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Floating dock */}
-        <div className="relative z-20 mt-6 flex justify-center">
-          <div className="glass-zone flex flex-wrap items-center justify-center gap-1 px-2 py-2">
-            <DockButton
-              icon={<Mic className="size-4" />}
-              label="Voice"
-              onClick={() =>
-                liveMeetings[0]
-                  ? joinMutation.mutate(liveMeetings[0]!.id)
-                  : startMeetingMutation.mutate()
-              }
-            />
-            <DockButton
-              icon={<Camera className="size-4" />}
-              label="Camera"
-              onClick={() =>
-                liveMeetings[0]
-                  ? joinMutation.mutate(liveMeetings[0]!.id)
-                  : startMeetingMutation.mutate()
-              }
-            />
-            <DockButton
-              icon={<MessageSquare className="size-4" />}
-              label="Chat"
-              onClick={() => void navigate({ to: "/messages" })}
-            />
-            <DockButton
-              icon={<FolderKanban className="size-4" />}
-              label="Projects"
-              onClick={() => void navigate({ to: "/company" })}
-            />
-            <DockButton
-              icon={<Bot className="size-4" />}
-              label="AI"
-              onClick={() => void navigate({ to: "/ai-employees" })}
-            />
-            <DockButton
-              icon={<DoorOpen className="size-4" />}
-              label="Leave office"
-              onClick={() => void navigate({ to: "/dashboard" })}
-            />
-          </div>
+        {/* Floor summary (mobile-friendly, real counts) */}
+        <div className="grid gap-3 border-t border-border p-4 sm:grid-cols-3">
+          <FloorStat
+            icon={<Users className="size-4" />}
+            label="Developers"
+            value={teamRows.length}
+            to="/team"
+          />
+          <FloorStat
+            icon={<Bot className="size-4" />}
+            label="AI employees"
+            value={aiRows.length}
+            to="/ai-employees"
+          />
+          <FloorStat
+            icon={<Video className="size-4" />}
+            label="Online now"
+            value={onlineNow.length}
+            to="/office"
+          />
         </div>
       </section>
+
+      {/* More menu */}
+      <Dialog open={moreOpen} onOpenChange={setMoreOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Office shortcuts</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            {[
+              { to: "/team", label: "Team roster" },
+              { to: "/applications", label: "Applications" },
+              { to: "/jobs", label: "Job board" },
+              { to: "/ai-employees", label: "AI marketplace" },
+              { to: "/company", label: "Company profile" },
+            ].map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setMoreOpen(false)}
+                className="rounded-lg border border-border bg-card/60 px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Developer profile modal */}
       <Dialog open={Boolean(openDeveloper)} onOpenChange={(open) => !open && setOpenDeveloper(null)}>
@@ -645,6 +613,76 @@ function OfficePage() {
   );
 }
 
+function Nameplate({
+  position,
+  name,
+  role,
+  status,
+  tooltip,
+  onClick,
+}: {
+  position: { left: string; top: string };
+  name: string;
+  role: string;
+  status: PresenceStatus;
+  tooltip: string;
+  onClick: () => void;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          onClick={onClick}
+          style={position}
+          className="absolute z-20 flex -translate-x-1/2 items-center gap-2 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-primary"
+        >
+          <span className={cn("size-2 shrink-0 rounded-full", statusTone[status])} />
+          <span className="text-left">
+            <span className="block max-w-28 truncate text-xs font-semibold text-foreground">
+              {name}
+            </span>
+            <span className="block max-w-28 truncate text-[0.6rem] text-muted-foreground">
+              {role}
+            </span>
+          </span>
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>
+        {tooltip} · {statusLabel[status]}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+function FloorStat({
+  icon,
+  label,
+  value,
+  to,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  to: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center gap-3 rounded-xl border border-border bg-card/60 px-3 py-2 transition-colors hover:bg-accent"
+    >
+      <span className="flex size-9 items-center justify-center rounded-lg bg-accent text-primary">
+        {icon}
+      </span>
+      <span>
+        <span className="block text-lg font-semibold text-foreground">{value}</span>
+        <span className="block text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+          {label}
+        </span>
+      </span>
+    </Link>
+  );
+}
+
 function DockButton({
   icon,
   label,
@@ -661,7 +699,7 @@ function DockButton({
           onClick={onClick}
           aria-label={label}
           className={cn(
-            "flex flex-col items-center gap-1 rounded-xl px-3 py-2 text-muted-foreground transition-colors",
+            "flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-muted-foreground transition-colors",
             "hover:bg-accent hover:text-foreground",
           )}
         >
