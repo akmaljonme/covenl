@@ -12,7 +12,7 @@ import {
   Users,
   Video,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import officeFloor from "@/assets/office-floor.jpg";
