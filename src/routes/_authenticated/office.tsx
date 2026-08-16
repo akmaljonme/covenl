@@ -12,12 +12,13 @@ import {
   Users,
   Video,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import officeFloor from "@/assets/office-floor.jpg";
 import { EmptyState, LoadingRow } from "@/components/common/States";
 import { SkillList } from "@/components/common/SkillList";
+import { Character } from "@/components/office/Character";
 import { StatusPill, statusLabel, statusTone } from "@/components/office/OfficeParts";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
