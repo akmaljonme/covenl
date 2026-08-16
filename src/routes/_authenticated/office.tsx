@@ -424,29 +424,8 @@ function OfficePage() {
             );
           })}
 
-          {/* Team activity board */}
-          <aside className="absolute right-3 bottom-24 z-20 hidden w-56 flex-col gap-2 rounded-xl border border-border bg-background/75 p-3 backdrop-blur-md lg:flex">
-            <p className="text-[0.6rem] font-semibold tracking-[0.22em] text-muted-foreground uppercase">
-              Team activity
-            </p>
-            {activity.length === 0 ? (
-              <p className="text-xs text-muted-foreground">No team members yet.</p>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {activity.map((item) => (
-                  <li key={item.id} className="flex items-start gap-2">
-                    <span
-                      className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", statusTone[item.status])}
-                    />
-                    <div className="min-w-0">
-                      <p className="truncate text-xs font-medium text-foreground">{item.name}</p>
-                      <p className="truncate text-[0.65rem] text-muted-foreground">{item.detail}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </aside>
+
+
 
           {/* Floating dock */}
           <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
@@ -500,6 +479,34 @@ function OfficePage() {
             to="/office"
           />
         </div>
+
+        {/* Team activity */}
+        <div className="border-t border-border p-4">
+          <p className="text-[0.6rem] font-semibold tracking-[0.22em] text-muted-foreground uppercase">
+            Team activity
+          </p>
+          {activity.length === 0 ? (
+            <p className="mt-2 text-xs text-muted-foreground">No team members yet.</p>
+          ) : (
+            <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {activity.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-start gap-2 rounded-lg border border-border bg-card/50 px-3 py-2"
+                >
+                  <span
+                    className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", statusTone[item.status])}
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-medium text-foreground">{item.name}</p>
+                    <p className="truncate text-[0.65rem] text-muted-foreground">{item.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
       </section>
 
       {/* More menu */}
