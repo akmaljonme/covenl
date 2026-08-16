@@ -479,6 +479,34 @@ function OfficePage() {
             to="/office"
           />
         </div>
+
+        {/* Team activity */}
+        <div className="border-t border-border p-4">
+          <p className="text-[0.6rem] font-semibold tracking-[0.22em] text-muted-foreground uppercase">
+            Team activity
+          </p>
+          {activity.length === 0 ? (
+            <p className="mt-2 text-xs text-muted-foreground">No team members yet.</p>
+          ) : (
+            <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {activity.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-start gap-2 rounded-lg border border-border bg-card/50 px-3 py-2"
+                >
+                  <span
+                    className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", statusTone[item.status])}
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-medium text-foreground">{item.name}</p>
+                    <p className="truncate text-[0.65rem] text-muted-foreground">{item.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
       </section>
 
       {/* More menu */}
