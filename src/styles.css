@@ -231,3 +231,48 @@
   );
   filter: blur(0.3px);
 }
+
+/* ---- Office characters: idle bob + walk cycle ---- */
+@keyframes office-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes office-step-l {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1.5px) rotate(14deg);
+  }
+}
+
+@keyframes office-step-r {
+  0%,
+  100% {
+    transform: translateY(-1.5px) rotate(14deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.office-walk {
+  animation: office-bob 0.42s ease-in-out infinite;
+}
+
+.office-walk .office-leg-l {
+  animation: office-step-l 0.42s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.office-walk .office-leg-r {
+  animation: office-step-r 0.42s ease-in-out infinite;
+  transform-origin: top center;
+}
