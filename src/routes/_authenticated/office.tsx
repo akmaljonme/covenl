@@ -168,6 +168,29 @@ function OfficePage() {
   const statusOf = (userId: string | null | undefined): PresenceStatus =>
     (userId && presenceByUser.get(userId)) || "offline";
 
+  // Walkable avatar for the signed-in member, shared live with everyone else on the floor.
+  const floorRef = useRef<HTMLDivElement | null>(null);
+  const { me, others, walkTo } = useOfficeFloor({
+    companyId,
+    self: {
+      userId: user?.id ?? null,
+      name: profile?.full_name || "You",
+      role: isDirector ? "Director" : "Developer",
+      status: statusOf(user?.id),
+    },
+  });
+
+  const handleFloorClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest("button, a, [role='dialog']")) return;
+    const rect = floorRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    walkTo(
+      ((event.clientX - rect.left) / rect.width) * 100,
+      ((event.clientY - rect.top) / rect.height) * 100,
+    );
+  };
+
+
   const startMeetingMutation = useMutation({
     mutationFn: () =>
       startMeeting({
