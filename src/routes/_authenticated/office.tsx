@@ -496,7 +496,7 @@ function OfficePage() {
           </div>
 
           {/* Movement hint */}
-          <p className="pointer-events-none absolute bottom-4 left-4 z-30 rounded-lg border border-border bg-background/70 px-2.5 py-1.5 text-[0.6rem] tracking-[0.12em] text-muted-foreground uppercase backdrop-blur-md">
+          <p className="pointer-events-none absolute top-20 left-4 z-30 max-w-40 rounded-lg border border-border bg-background/70 px-2.5 py-1.5 text-[0.6rem] leading-relaxed tracking-[0.12em] text-muted-foreground uppercase backdrop-blur-md sm:top-24 sm:left-6">
             WASD / arrows to walk · click the floor to move
           </p>
 
