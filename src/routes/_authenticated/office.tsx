@@ -453,8 +453,50 @@ function OfficePage() {
             );
           })}
 
+          {/* Other members walking around, live from realtime presence */}
+          {others.map((walker) => (
+            <div
+              key={walker.userId}
+              className="pointer-events-none absolute z-20 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+              style={{ left: `${walker.x}%`, top: `${walker.y}%` }}
+            >
+              <span className="mb-1 rounded-md border border-border bg-background/80 px-2 py-0.5 text-[0.6rem] font-medium text-foreground backdrop-blur-md">
+                {walker.name}
+              </span>
+              <span style={{ transform: `scaleX(${walker.facing})` }}>
+                <Character
+                  name={walker.name}
+                  status={walker.status}
+                  walking={walker.walking}
+                  size={50}
+                />
+              </span>
+            </div>
+          ))}
 
+          {/* My own avatar */}
+          <div
+            className="pointer-events-none absolute z-30 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+            style={{ left: `${me.x}%`, top: `${me.y}%` }}
+          >
+            <span className="mb-1 rounded-md border border-primary/60 bg-background/85 px-2 py-0.5 text-[0.6rem] font-semibold text-primary backdrop-blur-md">
+              {profile?.full_name || "You"} (you)
+            </span>
+            <span style={{ transform: `scaleX(${me.facing})` }}>
+              <Character
+                name={profile?.full_name || "You"}
+                kind={isDirector ? "director" : "human"}
+                status={statusOf(user?.id)}
+                walking={me.walking}
+                size={58}
+              />
+            </span>
+          </div>
 
+          {/* Movement hint */}
+          <p className="pointer-events-none absolute bottom-4 left-4 z-30 rounded-lg border border-border bg-background/70 px-2.5 py-1.5 text-[0.6rem] tracking-[0.12em] text-muted-foreground uppercase backdrop-blur-md">
+            WASD / arrows to walk · click the floor to move
+          </p>
 
           {/* Floating dock */}
           <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
