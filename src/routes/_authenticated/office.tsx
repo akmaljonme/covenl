@@ -339,6 +339,7 @@ function OfficePage() {
             name={directorName}
             role="Director"
             status={statusOf(company.owner_id)}
+            kind="director"
             tooltip={`${directorName} · Director · open company dashboard`}
             onClick={() => void navigate({ to: "/dashboard" })}
           />
