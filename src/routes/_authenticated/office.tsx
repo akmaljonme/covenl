@@ -31,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
+import { useOfficeFloor } from "@/hooks/useOfficeFloor";
 import { usePresence } from "@/hooks/usePresence";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { supabase } from "@/integrations/supabase/client";
@@ -167,6 +168,29 @@ function OfficePage() {
   const statusOf = (userId: string | null | undefined): PresenceStatus =>
     (userId && presenceByUser.get(userId)) || "offline";
 
+  // Walkable avatar for the signed-in member, shared live with everyone else on the floor.
+  const floorRef = useRef<HTMLDivElement | null>(null);
+  const { me, others, walkTo } = useOfficeFloor({
+    companyId,
+    self: {
+      userId: user?.id ?? null,
+      name: profile?.full_name || "You",
+      role: isDirector ? "Director" : "Developer",
+      status: statusOf(user?.id),
+    },
+  });
+
+  const handleFloorClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest("button, a, [role='dialog']")) return;
+    const rect = floorRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    walkTo(
+      ((event.clientX - rect.left) / rect.width) * 100,
+      ((event.clientY - rect.top) / rect.height) * 100,
+    );
+  };
+
+
   const startMeetingMutation = useMutation({
     mutationFn: () =>
       startMeeting({
@@ -261,7 +285,11 @@ function OfficePage() {
     <TooltipProvider delayDuration={120}>
       <section className="relative overflow-hidden rounded-3xl border border-border bg-background">
         {/* Rendered HQ floor */}
-        <div className="relative aspect-[16/10] w-full">
+        <div
+          ref={floorRef}
+          onClick={handleFloorClick}
+          className="relative aspect-[16/10] w-full cursor-crosshair select-none"
+        >
           <img
             src={officeFloor}
             alt={`${company.name} virtual headquarters floor`}
@@ -311,6 +339,7 @@ function OfficePage() {
             name={directorName}
             role="Director"
             status={statusOf(company.owner_id)}
+            kind="director"
             tooltip={`${directorName} · Director · open company dashboard`}
             onClick={() => void navigate({ to: "/dashboard" })}
           />
@@ -416,6 +445,7 @@ function OfficePage() {
                 name={hire.ai_employee?.name ?? "AI employee"}
                 role={`${hire.ai_employee?.level ?? "AI"} · $${hire.ai_employee?.monthly_price ?? 0}/mo`}
                 status={hire.status === "active" ? "working" : "offline"}
+                kind="robot"
                 tooltip={`${hire.ai_employee?.role ?? "AI"} · ${hire.current_task || "No task assigned yet"}`}
                 onClick={() => {
                   setOpenAi(hire);
@@ -425,8 +455,50 @@ function OfficePage() {
             );
           })}
 
+          {/* Other members walking around, live from realtime presence */}
+          {others.map((walker) => (
+            <div
+              key={walker.userId}
+              className="pointer-events-none absolute z-20 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+              style={{ left: `${walker.x}%`, top: `${walker.y}%` }}
+            >
+              <span className="mb-1 rounded-md border border-border bg-background/80 px-2 py-0.5 text-[0.6rem] font-medium text-foreground backdrop-blur-md">
+                {walker.name}
+              </span>
+              <span style={{ transform: `scaleX(${walker.facing})` }}>
+                <Character
+                  name={walker.name}
+                  status={walker.status}
+                  walking={walker.walking}
+                  size={50}
+                />
+              </span>
+            </div>
+          ))}
 
+          {/* My own avatar */}
+          <div
+            className="pointer-events-none absolute z-30 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+            style={{ left: `${me.x}%`, top: `${me.y}%` }}
+          >
+            <span className="mb-1 rounded-md border border-primary/60 bg-background/85 px-2 py-0.5 text-[0.6rem] font-semibold text-primary backdrop-blur-md">
+              {profile?.full_name || "You"} (you)
+            </span>
+            <span style={{ transform: `scaleX(${me.facing})` }}>
+              <Character
+                name={profile?.full_name || "You"}
+                kind={isDirector ? "director" : "human"}
+                status={statusOf(user?.id)}
+                walking={me.walking}
+                size={58}
+              />
+            </span>
+          </div>
 
+          {/* Movement hint */}
+          <p className="pointer-events-none absolute bottom-4 left-4 z-30 rounded-lg border border-border bg-background/70 px-2.5 py-1.5 text-[0.6rem] tracking-[0.12em] text-muted-foreground uppercase backdrop-blur-md">
+            WASD / arrows to walk · click the floor to move
+          </p>
 
           {/* Floating dock */}
           <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2">
@@ -628,6 +700,7 @@ function Nameplate({
   status,
   tooltip,
   onClick,
+  kind = "human",
 }: {
   position: { left: string; top: string };
   name: string;
@@ -635,6 +708,7 @@ function Nameplate({
   status: PresenceStatus;
   tooltip: string;
   onClick: () => void;
+  kind?: "human" | "robot" | "director";
 }) {
   return (
     <Tooltip>
@@ -642,15 +716,18 @@ function Nameplate({
         <button
           onClick={onClick}
           style={position}
-          className="absolute z-20 flex -translate-x-1/2 items-center gap-2 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-primary"
+          className="absolute z-20 flex -translate-x-1/2 flex-col items-center gap-1 transition hover:-translate-y-0.5"
         >
-          <span className={cn("size-2 shrink-0 rounded-full", statusTone[status])} />
-          <span className="text-left">
-            <span className="block max-w-28 truncate text-xs font-semibold text-foreground">
-              {name}
-            </span>
-            <span className="block max-w-28 truncate text-[0.6rem] text-muted-foreground">
-              {role}
+          <Character name={name} kind={kind} status={status} size={52} />
+          <span className="flex items-center gap-2 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 backdrop-blur-md transition-colors hover:border-primary">
+            <span className={cn("size-2 shrink-0 rounded-full", statusTone[status])} />
+            <span className="text-left">
+              <span className="block max-w-28 truncate text-xs font-semibold text-foreground">
+                {name}
+              </span>
+              <span className="block max-w-28 truncate text-[0.6rem] text-muted-foreground">
+                {role}
+              </span>
             </span>
           </span>
         </button>
