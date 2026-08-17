@@ -698,6 +698,7 @@ function Nameplate({
   status,
   tooltip,
   onClick,
+  kind = "human",
 }: {
   position: { left: string; top: string };
   name: string;
@@ -705,6 +706,7 @@ function Nameplate({
   status: PresenceStatus;
   tooltip: string;
   onClick: () => void;
+  kind?: "human" | "robot" | "director";
 }) {
   return (
     <Tooltip>
@@ -712,15 +714,18 @@ function Nameplate({
         <button
           onClick={onClick}
           style={position}
-          className="absolute z-20 flex -translate-x-1/2 items-center gap-2 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-primary"
+          className="absolute z-20 flex -translate-x-1/2 flex-col items-center gap-1 transition hover:-translate-y-0.5"
         >
-          <span className={cn("size-2 shrink-0 rounded-full", statusTone[status])} />
-          <span className="text-left">
-            <span className="block max-w-28 truncate text-xs font-semibold text-foreground">
-              {name}
-            </span>
-            <span className="block max-w-28 truncate text-[0.6rem] text-muted-foreground">
-              {role}
+          <Character name={name} kind={kind} status={status} size={52} />
+          <span className="flex items-center gap-2 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 backdrop-blur-md transition-colors hover:border-primary">
+            <span className={cn("size-2 shrink-0 rounded-full", statusTone[status])} />
+            <span className="text-left">
+              <span className="block max-w-28 truncate text-xs font-semibold text-foreground">
+                {name}
+              </span>
+              <span className="block max-w-28 truncate text-[0.6rem] text-muted-foreground">
+                {role}
+              </span>
             </span>
           </span>
         </button>
