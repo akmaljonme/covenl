@@ -445,6 +445,7 @@ function OfficePage() {
                 name={hire.ai_employee?.name ?? "AI employee"}
                 role={`${hire.ai_employee?.level ?? "AI"} · $${hire.ai_employee?.monthly_price ?? 0}/mo`}
                 status={hire.status === "active" ? "working" : "offline"}
+                kind="robot"
                 tooltip={`${hire.ai_employee?.role ?? "AI"} · ${hire.current_task || "No task assigned yet"}`}
                 onClick={() => {
                   setOpenAi(hire);
