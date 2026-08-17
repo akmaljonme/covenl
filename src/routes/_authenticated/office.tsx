@@ -285,7 +285,11 @@ function OfficePage() {
     <TooltipProvider delayDuration={120}>
       <section className="relative overflow-hidden rounded-3xl border border-border bg-background">
         {/* Rendered HQ floor */}
-        <div className="relative aspect-[16/10] w-full">
+        <div
+          ref={floorRef}
+          onClick={handleFloorClick}
+          className="relative aspect-[16/10] w-full cursor-crosshair select-none"
+        >
           <img
             src={officeFloor}
             alt={`${company.name} virtual headquarters floor`}
